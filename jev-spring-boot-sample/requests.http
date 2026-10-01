@@ -1,0 +1,40 @@
+### Open purchase orders (seeded ERP data)
+GET http://localhost:8080/api/v1/purchase-orders
+
+### Rolled vessel booking, firm new date -> expedite by air
+POST http://localhost:8080/api/v1/disruptions/assessments
+Content-Type: application/json
+
+{
+  "noticeId": "N-1",
+  "purchaseOrder": "PO-4500012",
+  "channel": "email",
+  "message": "Dear customer, due to severe congestion at Yantian port our vessel booking was rolled to the next sailing. The goods are ready and loaded; revised ETA is 10 days later than planned. New booking ref MAEU-778812."
+}
+
+### The overnight supplier inbox, assessed concurrently on virtual threads
+POST http://localhost:8080/api/v1/disruptions/assessments/batch
+Content-Type: application/json
+
+{
+  "notices": [
+    {"noticeId": "N-2", "purchaseOrder": "PO-4500013", "channel": "portal",
+     "message": "Our cathode material supplier has put us on allocation. We can ship 50% of the cells on the original date; the balance will follow approximately 3 weeks later. This allocation is expected to continue into next quarter."},
+    {"noticeId": "N-3", "purchaseOrder": "PO-4500014", "channel": "email",
+     "message": "Injection machine #4 had a breakdown, the line is down for maintenance. We expect to ship 9 days late."},
+    {"noticeId": "N-4", "purchaseOrder": "PO-4500015", "channel": "email",
+     "message": "Small delay: trucks are short this week, delivery will be 2 days later than the original date."},
+    {"noticeId": "N-5", "purchaseOrder": "PO-4500012", "channel": "email",
+     "message": "Please note the order is on schedule and will ship as planned."},
+    {"noticeId": "N-6", "purchaseOrder": "PO-4500014", "channel": "email",
+     "message": "During final inspection we found defects on part of the lot (sink marks, out of spec wall thickness). We will rework and update you."},
+    {"noticeId": "N-7", "purchaseOrder": "PO-4500013", "channel": "call",
+     "message": "Hi, just checking in about the PO, will let you know."}
+  ]
+}
+
+### Jev dependency health (cached), and SDK metrics
+GET http://localhost:8080/actuator/health/jev
+
+###
+GET http://localhost:8080/actuator/metrics/jev.client.attempts

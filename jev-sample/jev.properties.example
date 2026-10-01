@@ -1,0 +1,20 @@
+# Copy to jev.properties (git-ignored) to configure the sample. Every key can also be set as a system property
+# (-Dtypesafe.request-timeout=5s) or environment variable (TYPESAFE_REQUEST_TIMEOUT=5s); those take precedence
+# over this file. Explicit JevClient.Builder calls take precedence over all of them.
+
+# Prefer the TYPESAFE_API_KEY environment variable over writing the key here.
+#typesafe.api-key=ts-...
+typesafe.base-url=https://api.typesafe.ai
+typesafe.default-model=jev-latest
+
+# Durations: 500ms, 10s, 2m, 1h, plain seconds (10), or ISO-8601 (PT10S).
+typesafe.connect-timeout=5s
+typesafe.request-timeout=10s
+# Wall-clock budget for one call including retries and back-off; "none" disables it.
+typesafe.total-timeout=30s
+typesafe.max-retries=2
+
+# Client-side bulkhead: concurrent in-flight requests per client.
+typesafe.max-concurrent-requests=64
+# 1.1, 2 or 3 (HTTP/3 is negotiated via Alt-Svc and falls back automatically).
+typesafe.http-version=2

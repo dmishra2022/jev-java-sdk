@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: supply-disruption-response
+  threads:
+    virtual:
+      # Tomcat request handling, @Async and scheduling run on virtual threads; blocking Jev calls are cheap.
+      enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_absent
+
+server:
+  shutdown: graceful
+
+jev:
+  # auto: real API when an API key is set, offline heuristic stand-in otherwise. Or: live | offline
+  mode: auto
+  api-key: ${TYPESAFE_API_KEY:}
+  # Pin a versioned model in production so decisions are reproducible.
+  model: ${TYPESAFE_DEFAULT_MODEL:jev-latest}
+  request-timeout: 10s
+  total-timeout: 25s
+  max-retries: 2
+  # Client-side bulkhead: at most this many concurrent Jev calls from this instance.
+  max-concurrent-requests: 32
+  health-cache-ttl: 30s
+
+supplychain:
+  zone: UTC
+  # business-date: 2026-10-01   # pin "today" to replay past notices
+  policy:
+    delay-confirmed-above: 0.7
+    delay-denied-below: 0.3
+    min-delay-window-confidence: 0.5
+    unspecified-delay-days: 21
+    slippage-pessimism: 0.5
+    partial-offered-above: 0.7
+    partial-share: 0.5
+    partial-shipment-fee: 750
+    freight-recoverable-above: 0.6
+    spot-buy-fixed-cost: 2500
+    quality-risk-above: 0.7
+    systemic-risk-above: 0.7
+    approval-limit: 25000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
